@@ -1,0 +1,193 @@
+{
+  "name": "N8N101 - Merging Data",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        16
+      ],
+      "id": "41c5daab-01ec-4e4e-87a3-cc3237aca02d",
+      "name": "When clicking Execute workflow"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"orders\": [\n    { \"orderID\": 101, \"customer\": \"Alice\", \"total\": 85, \"source\": \"web\" },\n    { \"orderID\": 102, \"customer\": \"Bob\", \"total\": 120, \"source\": \"web\" }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        -112
+      ],
+      "id": "5daf3bac-d1be-44e8-9f8e-2e7233a99af3",
+      "name": "Online Form Orders",
+      "notesInFlow": true,
+      "notes": "Simulates orders received from an online form"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "orders",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -112
+      ],
+      "id": "4402eb2b-f0e0-417a-be59-72a8c6366ac5",
+      "name": "Split Online Orders",
+      "notesInFlow": true,
+      "notes": "1 item with array to 2 individual items"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"orders\": [\n    { \"orderID\": 201, \"customer\": \"Charlie\", \"total\": 200, \"source\": \"api\" },\n    { \"orderID\": 202, \"customer\": \"David\", \"total\": 65, \"source\": \"api\" }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        128
+      ],
+      "id": "9bacb02f-6eac-4105-8efe-b34fa0de253a",
+      "name": "API Orders",
+      "notesInFlow": true,
+      "notes": "Simulates orders received from an external API"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "orders",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        0,
+        128
+      ],
+      "id": "e3f34a88-0969-49a5-bee8-1b0fee5628b4",
+      "name": "Split API Orders",
+      "notesInFlow": true,
+      "notes": "1 item with array to 2 individual items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        240,
+        16
+      ],
+      "id": "af78be5b-d7ea-4dea-b571-80b0e1ffe27a",
+      "name": "Merge All Orders",
+      "notesInFlow": true,
+      "notes": "Appends both streams into a single list of 4 orders"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "allOrders",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        480,
+        16
+      ],
+      "id": "9631ffe9-f0ef-474a-86a3-b4734fc0549e",
+      "name": "Collect Into Array",
+      "notesInFlow": true,
+      "notes": "4 separate items into 1 item containing all orders in a single array"
+    }
+  ],
+  "connections": {
+    "When clicking Execute workflow": {
+      "main": [
+        [
+          {
+            "node": "Online Form Orders",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "API Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Online Form Orders": {
+      "main": [
+        [
+          {
+            "node": "Split Online Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Online Orders": {
+      "main": [
+        [
+          {
+            "node": "Merge All Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API Orders": {
+      "main": [
+        [
+          {
+            "node": "Split API Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split API Orders": {
+      "main": [
+        [
+          {
+            "node": "Merge All Orders",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge All Orders": {
+      "main": [
+        [
+          {
+            "node": "Collect Into Array",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "active": false,
+  "tags": []
+}
