@@ -25,4 +25,6 @@ An order data processing workflow developed as part of the n8n Academy Essential
 Completed as an n8n Academy educational project.
 
 ## Author
-Eskandar Balakhanlu
+## Workflow Screenshot
+
+![Order Merging & Aggregation](order-merging-workflow.png)
